@@ -13,7 +13,7 @@ for file in files:
 
     df = pd.DataFrame(data)
 
-    df.drop("_id", axis=1, inplace=True)
+    # df.drop("_id", axis=1, inplace=True)
 
     df.to_csv(write_path, index=False, header=True, encoding='utf-32')
     print(f'Finished {file}')

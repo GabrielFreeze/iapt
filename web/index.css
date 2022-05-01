@@ -1,0 +1,100 @@
+html {
+    font-size: 100%;
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+.game-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    /* display: inline-block; */
+    
+
+    background-color: whitesmoke;
+
+    /* overflow: auto; */
+    /* width: 200px; */
+    
+}
+
+.crossword-container {
+    background-color: lightgray;
+    aspect-ratio: 1;
+    /* width: auto; */
+
+    margin: 2.5%;
+    padding: 1%;
+
+    display: inline-grid;
+    grid-gap: auto;
+    grid-template-columns:  repeat(10, 10%);
+    grid-template-rows: repeat(10, 10%);
+    float: left;
+
+
+}
+
+.letter-container {
+    border-style: solid;
+    border-width: 2px;
+    border-color: bisque;
+    border-radius: 7px;
+
+    background: whitesmoke;
+
+    display: inline-block;
+
+    width: 40px;
+    line-height: 40px;
+    text-align: center;
+    
+    font-size: 1rem;
+
+    color: black;
+
+    aspect-ratio: 1;
+}
+
+.hints-section {
+    display:flex;
+    
+    margin-left: 2.5%;
+    margin-right: 2.5%;
+    margin-top: 2.5%;
+    margin-bottom: 2.5%;
+}
+.hints-container {
+    background-color: #FEFBF3;
+
+    border-style: solid;
+    border-color: bisque;
+    border-radius: 5px;
+
+    width: 175px;
+
+    /* margin: 1%; */
+}
+#across {
+    float: left;
+}
+#down {
+    margin-left: 20px;
+}
+
+.hints-section .hints-title{
+    color:#79B4B7;
+    background-color: #F8F0DF;
+    font-size: 2rem;
+    text-align: center;
+    
+}
+
+.hints-section ol{
+    color: black;
+    text-align: center;
+}
