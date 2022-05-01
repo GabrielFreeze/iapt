@@ -9,110 +9,119 @@
 
     <title>CrossWord</title>
 </head>
-<body>
+<body onload="initGrid()">
 
     <div class="game-container">
         <div class="crossword-container">
-            <div class="letter-container" id="1">A</div>
-            <div class="letter-container" id="2">B</div>
-            <div class="letter-container" id="3">C</div>
-            <div class="letter-container" id="4">D</div>
-            <div class="letter-container" id="5">E</div>
-            <div class="letter-container" id="6">F</div>
-            <div class="letter-container" id="7">G</div>
-            <div class="letter-container" id="8">H</div>
-            <div class="letter-container" id="9">I</div>
-            <div class="letter-container" id="10">J</div>
-            <div class="letter-container" id="11">K</div>
-            <div class="letter-container" id="12">L</div>
-            <div class="letter-container" id="13">M</div>
-            <div class="letter-container" id="14">N</div>
-            <div class="letter-container" id="15">O</div>
-            <div class="letter-container" id="16">P</div>
-            <div class="letter-container" id="17">Q</div>
-            <div class="letter-container" id="18">R</div>
-            <div class="letter-container" id="19">S</div>
-            <div class="letter-container" id="20">T</div>
-            <div class="letter-container" id="21">U</div>
-            <div class="letter-container" id="22">V</div>
-            <div class="letter-container" id="23">W</div>
-            <div class="letter-container" id="24">X</div>
-            <div class="letter-container" id="25">Y</div>
-            <div class="letter-container" id="26">Z</div>
-            <div class="letter-container" id="26">a</div>
-            <div class="letter-container" id="27">b</div>
-            <div class="letter-container" id="28">c</div>
-            <div class="letter-container" id="29">d</div>
-            <div class="letter-container" id="30">e</div>
-            <div class="letter-container" id="31">f</div>
-            <div class="letter-container" id="32">g</div>
-            <div class="letter-container" id="33">h</div>
-            <div class="letter-container" id="34">i</div>
-            <div class="letter-container" id="35">j</div>
-            <div class="letter-container" id="36">k</div>
-            <div class="letter-container" id="37">l</div>
-            <div class="letter-container" id="38">m</div>
-            <div class="letter-container" id="39">n</div>
-            <div class="letter-container" id="40">o</div>
-            <div class="letter-container" id="41">p</div>
-            <div class="letter-container" id="42">q</div>
-            <div class="letter-container" id="43">r</div>
-            <div class="letter-container" id="44">s</div>
-            <div class="letter-container" id="45">t</div>
-            <div class="letter-container" id="46">u</div>
-            <div class="letter-container" id="47">v</div>
-            <div class="letter-container" id="48">w</div>
-            <div class="letter-container" id="49">x</div>
-            <div class="letter-container" id="50">y</div>
-            <div class="letter-container" id="51">z</div>
-            <div class="letter-container" id="52">0</div>
-            <div class="letter-container" id="53">1</div>
-            <div class="letter-container" id="54">2</div>
-            <div class="letter-container" id="55">3</div>
-            <div class="letter-container" id="56">4</div>
-            <div class="letter-container" id="57">5</div>
-            <div class="letter-container" id="58">6</div>
-            <div class="letter-container" id="59">7</div>
-            <div class="letter-container" id="60">8</div>
-            <div class="letter-container" id="61">9</div>
-            <div class="letter-container" id="62">-</div>
-            <div class="letter-container" id="63">=</div>
-            <div class="letter-container" id="1">A</div>
-            <div class="letter-container" id="2">B</div>
-            <div class="letter-container" id="3">C</div>
-            <div class="letter-container" id="4">D</div>
-            <div class="letter-container" id="5">E</div>
-            <div class="letter-container" id="6">F</div>
-            <div class="letter-container" id="7">G</div>
-            <div class="letter-container" id="8">H</div>
-            <div class="letter-container" id="9">I</div>
-            <div class="letter-container" id="10">J</div>
-            <div class="letter-container" id="11">K</div>
-            <div class="letter-container" id="12">L</div>
-            <div class="letter-container" id="13">M</div>
-            <div class="letter-container" id="14">N</div>
-            <div class="letter-container" id="15">O</div>
-            <div class="letter-container" id="16">P</div>
-            <div class="letter-container" id="17">Q</div>
-            <div class="letter-container" id="18">R</div>
-            <div class="letter-container" id="19">S</div>
-            <div class="letter-container" id="20">T</div>
-            <div class="letter-container" id="21">U</div>
-            <div class="letter-container" id="22">V</div>
-            <div class="letter-container" id="23">W</div>
-            <div class="letter-container" id="24">X</div>
-            <div class="letter-container" id="25">Y</div>
-            <div class="letter-container" id="18">R</div>
-            <div class="letter-container" id="19">S</div>
-            <div class="letter-container" id="20">T</div>
-            <div class="letter-container" id="21">U</div>
-            <div class="letter-container" id="22">V</div>
-            <div class="letter-container" id="23">W</div>
-            <div class="letter-container" id="24">X</div>
-            <div class="letter-container" id="25">Y</div>
-            <div class="letter-container" id="22">V</div>
-            <div class="letter-container" id="23">W</div>
-            <div class="letter-container" id="24">X</div>
+            <div class="letter-container" id="letter-1"  > <div class="tile-number" id="tile-1">10</div> A</div>
+            <div class="letter-container" id="letter-2"  > <div class="tile-number" id="tile-2">1</div> B</div>
+            <div class="letter-container" id="letter-3"  > <div class="tile-number" id="tile-3">5</div> C</div>
+            <div class="letter-container" id="letter-4"  > <div class="tile-number" id="tile-4"></div> D</div>
+            <div class="letter-container" id="letter-5"  > <div class="tile-number" id="tile-5"></div> E</div>
+            <div class="letter-container" id="letter-6"  > <div class="tile-number" id="tile-6"></div> F</div>
+            <div class="letter-container" id="letter-7"  > <div class="tile-number" id="tile-7"></div> G</div>
+            <div class="letter-container" id="letter-8"  > <div class="tile-number" id="tile-8"></div> H</div>
+            <div class="letter-container" id="letter-9"  > <div class="tile-number" id="tile-9"></div> I</div>
+            <div class="letter-container" id="letter-10" > <div class="tile-number" id="tile-10"></div> J</div>
+            <div class="letter-container" id="letter-11" > <div class="tile-number" id="tile-11"></div> K</div>
+            <div class="letter-container" id="letter-12" > <div class="tile-number" id="tile-12"></div> L</div>
+            <div class="letter-container" id="letter-13" > <div class="tile-number" id="tile-13"></div> M</div>
+            <div class="letter-container" id="letter-14" > <div class="tile-number" id="tile-14"></div> N</div>
+            <div class="letter-container" id="letter-15" > <div class="tile-number" id="tile-15"></div> O</div>
+            <div class="letter-container" id="letter-16" > <div class="tile-number" id="tile-16"></div> P</div>
+            <div class="letter-container" id="letter-17" > <div class="tile-number" id="tile-17"></div> Q</div>
+            <div class="letter-container" id="letter-18" > <div class="tile-number" id="tile-18"></div> R</div>
+            <div class="letter-container" id="letter-19" > <div class="tile-number" id="tile-19"></div> S</div>
+            <div class="letter-container" id="letter-20" > <div class="tile-number" id="tile-20"></div> T</div>
+            <div class="letter-container" id="letter-21" > <div class="tile-number" id="tile-21"></div> U</div>
+            <div class="letter-container" id="letter-22" > <div class="tile-number" id="tile-22"></div> V</div>
+            <div class="letter-container" id="letter-23" > <div class="tile-number" id="tile-23"></div> W</div>
+            <div class="letter-container" id="letter-24" > <div class="tile-number" id="tile-24"></div> X</div>
+            <div class="letter-container" id="letter-25" > <div class="tile-number" id="tile-25"></div> Y</div>
+            <div class="letter-container" id="letter-26" > <div class="tile-number" id="tile-26"></div> Z</div>
+            <div class="letter-container" id="letter-27" > <div class="tile-number" id="tile-27"></div> A</div>
+            <div class="letter-container" id="letter-28" > <div class="tile-number" id="tile-28"></div> B</div>
+            <div class="letter-container" id="letter-29" > <div class="tile-number" id="tile-29"></div> C</div>
+            <div class="letter-container" id="letter-30" > <div class="tile-number" id="tile-30"></div> D</div>
+            <div class="letter-container" id="letter-31" > <div class="tile-number" id="tile-31"></div> E</div>
+            <div class="letter-container" id="letter-32" > <div class="tile-number" id="tile-32"></div> F</div>
+            <div class="letter-container" id="letter-33" > <div class="tile-number" id="tile-33"></div> G</div>
+            <div class="letter-container" id="letter-34" > <div class="tile-number" id="tile-34"></div> H</div>
+            <div class="letter-container" id="letter-35" > <div class="tile-number" id="tile-35"></div> I</div>
+            <div class="letter-container" id="letter-36" > <div class="tile-number" id="tile-36"></div> J</div>
+            <div class="letter-container" id="letter-37" > <div class="tile-number" id="tile-37"></div> K</div>
+            <div class="letter-container" id="letter-38" > <div class="tile-number" id="tile-38"></div> L</div>
+            <div class="letter-container" id="letter-39" > <div class="tile-number" id="tile-39"></div> M</div>
+            <div class="letter-container" id="letter-40" > <div class="tile-number" id="tile-40"></div> N</div>
+            <div class="letter-container" id="letter-41" > <div class="tile-number" id="tile-41"></div> O</div>
+            <div class="letter-container" id="letter-42" > <div class="tile-number" id="tile-42"></div> P</div>
+            <div class="letter-container" id="letter-43" > <div class="tile-number" id="tile-43"></div> Q</div>
+            <div class="letter-container" id="letter-44" > <div class="tile-number" id="tile-44"></div> R</div>
+            <div class="letter-container" id="letter-45" > <div class="tile-number" id="tile-45"></div> S</div>
+            <div class="letter-container" id="letter-46" > <div class="tile-number" id="tile-46"></div> T</div>
+            <div class="letter-container" id="letter-47" > <div class="tile-number" id="tile-47"></div> U</div>
+            <div class="letter-container" id="letter-48" > <div class="tile-number" id="tile-48"></div> V</div>
+            <div class="letter-container" id="letter-49" > <div class="tile-number" id="tile-49"></div> W</div>
+            <div class="letter-container" id="letter-50" > <div class="tile-number" id="tile-50"></div> X</div>
+            <div class="letter-container" id="letter-51" > <div class="tile-number" id="tile-51"></div> Y</div>
+            <div class="letter-container" id="letter-52" > <div class="tile-number" id="tile-52"></div> Z</div>
+            <div class="letter-container" id="letter-53" > <div class="tile-number" id="tile-53"></div> A</div>
+            <div class="letter-container" id="letter-54" > <div class="tile-number" id="tile-54"></div> B</div>
+            <div class="letter-container" id="letter-55" > <div class="tile-number" id="tile-55"></div> C</div>
+            <div class="letter-container" id="letter-56" > <div class="tile-number" id="tile-56"></div> D</div>
+            <div class="letter-container" id="letter-57" > <div class="tile-number" id="tile-57"></div> E</div>
+            <div class="letter-container" id="letter-58" > <div class="tile-number" id="tile-58"></div> F</div>
+            <div class="letter-container" id="letter-59" > <div class="tile-number" id="tile-59"></div> G</div>
+            <div class="letter-container" id="letter-60" > <div class="tile-number" id="tile-60"></div> H</div>
+            <div class="letter-container" id="letter-61" > <div class="tile-number" id="tile-61"></div> I</div>
+            <div class="letter-container" id="letter-62" > <div class="tile-number" id="tile-62"></div> J</div>
+            <div class="letter-container" id="letter-63" > <div class="tile-number" id="tile-63"></div> K</div>
+            <div class="letter-container" id="letter-64" > <div class="tile-number" id="tile-64"></div> L</div>
+            <div class="letter-container" id="letter-65" > <div class="tile-number" id="tile-65"></div> M</div>
+            <div class="letter-container" id="letter-66" > <div class="tile-number" id="tile-66"></div> N</div>
+            <div class="letter-container" id="letter-67" > <div class="tile-number" id="tile-67"></div> O</div>
+            <div class="letter-container" id="letter-68" > <div class="tile-number" id="tile-68"></div> P</div>
+            <div class="letter-container" id="letter-69" > <div class="tile-number" id="tile-69"></div> Q</div>
+            <div class="letter-container" id="letter-70" > <div class="tile-number" id="tile-70"></div> R</div>
+            <div class="letter-container" id="letter-71" > <div class="tile-number" id="tile-71"></div> S</div>
+            <div class="letter-container" id="letter-72" > <div class="tile-number" id="tile-72"></div> T</div>
+            <div class="letter-container" id="letter-73" > <div class="tile-number" id="tile-73"></div> U</div>
+            <div class="letter-container" id="letter-74" > <div class="tile-number" id="tile-74"></div> V</div>
+            <div class="letter-container" id="letter-75" > <div class="tile-number" id="tile-75"></div> W</div>
+            <div class="letter-container" id="letter-76" > <div class="tile-number" id="tile-76"></div> X</div>
+            <div class="letter-container" id="letter-77" > <div class="tile-number" id="tile-77"></div> Y</div>
+            <div class="letter-container" id="letter-78" > <div class="tile-number" id="tile-78"></div> Z</div>
+            <div class="letter-container" id="letter-79" > <div class="tile-number" id="tile-79"></div> A</div>
+            <div class="letter-container" id="letter-80" > <div class="tile-number" id="tile-80"></div> B</div>
+            <div class="letter-container" id="letter-81" > <div class="tile-number" id="tile-81"></div> C</div>
+            <div class="letter-container" id="letter-82" > <div class="tile-number" id="tile-82"></div> D</div>
+            <div class="letter-container" id="letter-83" > <div class="tile-number" id="tile-83"></div> E</div>
+            <div class="letter-container" id="letter-84" > <div class="tile-number" id="tile-84"></div> F</div>
+            <div class="letter-container" id="letter-85" > <div class="tile-number" id="tile-85"></div> G</div>
+            <div class="letter-container" id="letter-86" > <div class="tile-number" id="tile-86"></div> H</div>
+            <div class="letter-container" id="letter-87" > <div class="tile-number" id="tile-87"></div> I</div>
+            <div class="letter-container" id="letter-88" > <div class="tile-number" id="tile-88"></div> J</div>
+            <div class="letter-container" id="letter-89" > <div class="tile-number" id="tile-89"></div> K</div>
+            <div class="letter-container" id="letter-90" > <div class="tile-number" id="tile-90"></div> L</div>
+            <div class="letter-container" id="letter-91" > <div class="tile-number" id="tile-91"></div> M</div>
+            <div class="letter-container" id="letter-92" > <div class="tile-number" id="tile-92"></div> N</div>
+            <div class="letter-container" id="letter-93" > <div class="tile-number" id="tile-93"></div> O</div>
+            <div class="letter-container" id="letter-94" > <div class="tile-number" id="tile-94"></div> P</div>
+            <div class="letter-container" id="letter-95" > <div class="tile-number" id="tile-95"></div> Q</div>
+            <div class="letter-container" id="letter-96" > <div class="tile-number" id="tile-96"></div> R</div>
+            <div class="letter-container" id="letter-97" > <div class="tile-number" id="tile-97"></div> S</div>
+            <div class="letter-container" id="letter-98" > <div class="tile-number" id="tile-98"></div> T</div>
+            <div class="letter-container" id="letter-99" > <div class="tile-number" id="tile-99"></div> U</div>
+            <div class="letter-container" id="letter-100"> <div class="tile-number" id="tile-100"></div> V</div>
+ 
+
+
+
+
+            
+
+
+                         
            
         </div>
 
@@ -122,7 +131,7 @@
                 
                 <!-- TODO: Set the starting number tile of the clue. -->
                 <ol>
-                    <li> <button onclick="placeCursor(1 ,'Across')"> Clue </button> </li>
+                    <li> <button onclick="placeCursor(1 ,'Across')"> Lorem impsum dolor sit amet Lorem impsum dolor </button> </li>
                     <li> <button onclick="placeCursor(2 ,'Across')"> Clue </button> </li>
                     <li> <button onclick="placeCursor(3 ,'Across')"> Clue </button> </li>
                     <li> <button onclick="placeCursor(4 ,'Across')"> Clue </button> </li>
