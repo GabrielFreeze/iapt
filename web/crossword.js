@@ -1,3 +1,4 @@
+
 function setLetter(i,j,letter) {
     w = 10
     index = i+(j*w)
@@ -27,10 +28,15 @@ function setTile(i,j,state) {
         //Remove text from div
         div.innerHTML = ' '
     } else if (state == 'filled') {
-
-        //TODO: Make number appear on starting tiles only.
-
-
+    
+        //Remove any text from div
+        // div.innerHTML = ' '
+        
+        //Make number appear on starting tiles
+        if (isStartingTile(i,j)) {
+            document.getElementById('tile-'+index.toString()).innerHTML = index.toString()
+        }
+        
         
         
 
@@ -53,6 +59,24 @@ function initGrid() {
 
 }
 
+
+function isStartingTile(i,j) {
+   for (var k = 0; k < wordlist[0].length; k++) {
+       if (wordlist[0][k][0] == i && wordlist[0][k][1] == j) {
+           return true
+       }
+   }
+
+   for (var k = 0; k < wordlist[1].length; k++) {
+        if (wordlist[1][k][0] == i && wordlist[1][k][1] == j) {
+            return true
+        }
+    }
+
+    return false
+
+}
+
 var grid = [
     /*  0   1   2   3   4   5   6   7   8   9 */
  /*0*/[' ','m','e','x','x','a',' ',' ',' ',' '],/*0*/
@@ -69,4 +93,4 @@ var grid = [
     ];
 
     var wordlist = [[[0,1],[2,2],[3,3]],
-                    [0,4],[0,5],[2,7],[8,2]]
+                    [[0,4],[0,5],[2,7],[8,2]]]

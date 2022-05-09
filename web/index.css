@@ -79,6 +79,10 @@ button {
 }
 
 
+.hints-container ol li:hover {
+    color:grey;
+}
+
 .letter-container {
     border-style: solid;
     border-width: 2px;
