@@ -109,14 +109,12 @@ function placeCursor(i,direction) {
     while (!isBlackTile(next_cursor)) {
         document.getElementById('letter-'+next_cursor).style.backgroundColor = 'pink'
 
-
         next_cursor += (direction == 'across'? 1:WIDTH)
     }
 
 
 
 }
-
 
 function setTile(i,j,state) {
     
@@ -142,10 +140,8 @@ function setTile(i,j,state) {
     }
 }
 
-
 function initGrid() {
     generateGrid()
-    grid = cross
     resetColors()
 
     //Update indices in hint-across containers
@@ -191,15 +187,28 @@ function isStartingTile(i,j) {
 function addWord(word,i,j,direction) {
     
     for (var k = 0; k < word.length; k++) {
-        cross[i][j] = word[k]
+        
+        if (k > 0 && word[k] == 'ħ' && word[k-1] == 'g') {
+            i -= direction == 'down'? 1:0
+            j -= direction == 'down'? 0:1
+            grid[i][j] = 'għ'
+        }
+        else if (k > 0 && word[k] == 'e' && word[k-1] == 'i') {
+            i -= direction == 'down'? 1:0
+            j -= direction == 'down'? 0:1
+            grid[i][j] = 'ie'
+        } else {
+            grid[i][j] = word[k]
+        }
+        
+        i += direction == 'down'? 1:0
+        j += direction == 'down'? 0:1
 
-        i += direction == 'across'? 1:0
-        j += direction == 'across'? 0:1
     }
 }
 
 function filled(i,j) {
-    return cross[i][j] != ''
+    return grid[i][j] != ''
 }
 
 function randInt(min,max) {
@@ -207,30 +216,169 @@ function randInt(min,max) {
     return Math.floor(Math.random() * (max - min) + min)
 }
 
+function getEmptyPosition(word, dir) {
 
-function generateGrid() {
-    words = ['mexxa','xikel','reħa','rażżan','tħaxxem']
-    clues = ['A','B','C','D']
+    for (var i = 0; i < WIDTH; i++) {
+        for (var j = 0; j < WIDTH-word.length; j++) {
+
+            valid = true
+
+            for (var k = 0; k < word.length; k++) {
+
+                if ((dir == 'across' && grid[i][j+k] != ' ') ||
+                    (dir == 'down' && grid[j+k][i] != ' ')){
+                    
+                    valid = false
+                    break
+                }
+            }
+            
+            if (valid) return [i,j]
+
+        }
+    }
+
+    return [-1,-1]
+
+}
+
+function tokenise(words) {
+
+    new_words = []
+
+    for (i in words) {
+        x = []
+        cursor = 0
+
+        for (j in words[i]) {
+            
+            if (j > 0 && words[i][j-1] == 'g' && words[i][j] == 'ħ')
+                x[--cursor] = 'għ'
+
+            else if (j > 0 && words[i][j-1] == 'i' && words[i][j] == 'e')
+                x[--cursor] = 'ie'
+            
+            else x[cursor] = words[i][j]
+
+            cursor ++
+
+        }
+
+        new_words.push(x)
+        
+    }
+    // console.log(new_words)
+
+    return new_words
     
-    // //Grid is always WIDTH² tiles
-    // cross = [[]*WIDTH]*WIDTH
-    
-    //Place first word randomly in grid
-    i = randInt(0,WIDTH-words[0].length)
-    j = randInt(0,WIDTH-words[0].length)
-    
-    dir = ['across','down'][randInt(0,1)]
-
-    addWord(words[0],i,j,dir)
-
-
-
 
 
 
 }
 
-var cross = [
+function generateGrid() {
+    words = ['mexxa','xikel','għajjien','bajda','ġenn','ajkla']
+    words = tokenise(words)
+
+    clues = ['A','B','C','D','E','F','G']
+        
+    //Place first word randomly in grid
+    i = randInt(0,WIDTH-words[0].length)
+    j = randInt(0,WIDTH-words[0].length)
+    
+    dir = randInt(0,1) 
+
+    addWord(words[0],i,j,['across','down'][dir])
+    wordlist[dir].push([i,j])
+
+    
+
+    //For all words traverse grid and attempt to find the position with the highest intersections
+    for (var w = 1; w < words.length; w++) {
+        word = words[w]
+        max_across = 0
+        max_down   = 0
+        
+        //Choose an initial position with no overlaps
+        pos_across = getEmptyPosition(word,'across')
+        pos_down   = getEmptyPosition(word,'down')
+        
+
+        //Slide word over grid, across and down
+        for (var i = 0; i < WIDTH; i++) {
+            for (var j = 0; j < (WIDTH-word.length)+1; j++) {
+                
+                across_num = 0
+                down_num   = 0
+
+                stop_across = false
+                stop_down = false
+                
+                for (var k = 0; k < word.length; k++) {
+                    
+                    //Slide Across
+
+                    if (!stop_across) {
+                        if (word[k] == grid[i][j+k]) {
+                            across_num ++
+                        }
+                        
+                        //Intersection overlaps other word
+                        else if (grid[i][j+k] != ' ') {
+                            across_num  = -1
+                            stop_across = true
+                        }
+                    }
+                    
+                    if (!stop_down) {
+                        // Slide Down                    
+                        if (word[k] == grid[j+k][i]) {
+                            down_num ++
+                        }
+    
+                        //Intersection overlaps other word
+                        else if (grid[j+k][i] != ' ') {
+                            down_num  = -1
+                            stop_down = true
+                        }
+
+                    }
+                   
+                }
+                
+                if (across_num > max_across) {
+                    max_across = across_num
+                    pos_across = [i,j]
+                }
+                
+                if (down_num > max_down) {
+                    max_down = down_num;
+                    pos_down = [j,i]
+                }
+            }
+        }
+
+        //Pick highest number from map
+        if (max_across >= max_down) {
+            //Add word across
+            console.log(word)
+            addWord(word,pos_across[0],pos_across[1],'across')
+            wordlist[0].push([pos_across[0],pos_across[1]])
+        }
+        else {
+            //Add word down
+            console.log(word)
+            addWord(word,pos_down[0],pos_down[1],'down')
+            wordlist[1].push([pos_down[0],pos_down[1]])
+        }
+        
+    }
+    
+    console.table(grid)
+    console.log(wordlist)
+}
+
+var grid = [
     /*  0   1   2    3   4   5   6   7   8   9 */
  /*0*/[' ',' ',' ', ' ',' ',' ',' ' ,' ',' ',' '],/*0*/
  /*1*/[' ',' ',' ', ' ',' ',' ',' ' ,' ',' ',' '],/*1*/
@@ -245,20 +393,23 @@ var cross = [
     /*  0   1   2    3   4   5   6    7   8   9 */
     ];
 
-var grid = [
-    /*  0   1   2    3   4   5   6   7   8   9 */
- /*0*/[' ','m','e', 'x','x','a',' ' ,' ',' ',' '],/*0*/
- /*1*/[' ',' ',' ', ' ','i','j',' ' ,' ',' ',' '],/*1*/
- /*2*/[' ',' ','r', 'i','k','k','i' ,' ','b',' '],/*2*/
- /*3*/[' ',' ',' ', 'b','e','l','u' ,' ','a',' '],/*3*/
- /*4*/[' ',' ',' ', ' ','l','a',' ' ,'ġ','j',' '],/*4*/
- /*5*/[' ',' ',' ', ' ',' ',' ',' ' ,'e','d',' '],/*5*/
- /*6*/[' ',' ','għ','a','j','j','ie','n','a',' '],/*6*/
- /*7*/[' ',' ',' ', ' ',' ',' ',' ' ,'n',' ',' '],/*7*/
- /*8*/[' ',' ',' ', ' ',' ',' ',' ' ,' ',' ',' '],/*8*/
- /*9*/[' ',' ',' ', ' ',' ',' ',' ' ,' ',' ',' '],/*9*/
-    /*  0   1   2    3   4   5   6    7   8   9 */
-    ];
+var wordlist = [[],[]]
 
-    var wordlist = [[[0,1],[2,2],[3,3],[6,2]],
-                    [[0,4],[0,5],[2,7],[2,8],[4,7]]]
+
+// var grid = [
+//     /*  0   1   2    3   4   5   6   7   8   9 */
+//  /*0*/[' ','m','e', 'x','x','a',' ' ,' ',' ',' '],/*0*/
+//  /*1*/[' ',' ',' ', ' ','i','j',' ' ,' ',' ',' '],/*1*/
+//  /*2*/[' ',' ','r', 'i','k','k','i' ,' ','b',' '],/*2*/
+//  /*3*/[' ',' ',' ', 'b','e','l','u' ,' ','a',' '],/*3*/
+//  /*4*/[' ',' ',' ', ' ','l','a',' ' ,'ġ','j',' '],/*4*/
+//  /*5*/[' ',' ',' ', ' ',' ',' ',' ' ,'e','d',' '],/*5*/
+//  /*6*/[' ',' ','għ','a','j','j','ie','n','a',' '],/*6*/
+//  /*7*/[' ',' ',' ', ' ',' ',' ',' ' ,'n',' ',' '],/*7*/
+//  /*8*/[' ',' ',' ', ' ',' ',' ',' ' ,' ',' ',' '],/*8*/
+//  /*9*/[' ',' ',' ', ' ',' ',' ',' ' ,' ',' ',' '],/*9*/
+//     /*  0   1   2    3   4   5   6    7   8   9 */
+//     ];
+
+// var wordlist = [[[0,1],[2,2],[3,3],[6,2]],
+//                 [[0,4],[0,5],[2,7],[2,8],[4,7]]]
