@@ -3,10 +3,30 @@ pressed_key = ''
 cursor = 0
 cursor_direction = ""
 
+function colorChannelMixer(colorChannelA, colorChannelB, amountToMix){
+    var channelA = colorChannelA*amountToMix;
+    var channelB = colorChannelB*(1-amountToMix);
+    return parseInt(channelA+channelB);
+}
+
+
 function resetColors() {
     //Reset background color
+
+    // const red = [255,0,0]
+    // const green = [0,255,0]
+    // const blue = [0,0,255]
+    // const yellow = [255,255,0]
+    // const purple = [255,0,255]
+    // const orange = [255,165,0]
+    // const pink = [255,192,203]
+    
+
     for (var j = 0; j < WIDTH; j++) {
         for (var k = 0; k < WIDTH; k++) {
+            
+            
+            
             setTile(j,k,(grid[j][k] == ' ')? 'blank':'filled')
         }
     }
@@ -72,9 +92,6 @@ function keyboardListener() {
     }
 
 
-
-
-
     //Remove cursor if end of word is reached
     if (!isBlackTile(next_cursor)) {
         cursor = next_cursor
@@ -83,6 +100,11 @@ function keyboardListener() {
 
 
 }
+
+function isPinkTile() {
+    return (document.getElementById('letter-'+cursor).style.backgroundColor == 'pink')
+}
+
 
 function placeCursor(i,direction) {
     
@@ -96,25 +118,31 @@ function placeCursor(i,direction) {
 
     if (direction == 'across') {
         cursor = (wordlist[0][i-1][0]*WIDTH+wordlist[0][i-1][1])+1
+        word = wordlist[0][i-1][3]
     } else {
         cursor = (wordlist[1][i-1][0]*WIDTH+wordlist[1][i-1][1])+1
+        word = wordlist[1][i-1][3]
     }
     
     cursor_direction = direction
-
-
     
     next_cursor = cursor
-    //Highlight tiles selected
-    while (!isBlackTile(next_cursor)) {
-        document.getElementById('letter-'+next_cursor).style.backgroundColor = 'pink'
+        
 
+    console.log(word)
+
+    j = 0
+    //Highlight tiles selected
+    while (j++ != word.length) {
+        document.getElementById('letter-'+next_cursor).style.backgroundColor = 'pink'
+        
         next_cursor += (direction == 'across'? 1:WIDTH)
     }
 
 
 
 }
+
 
 function setTile(i,j,state) {
     
@@ -140,20 +168,31 @@ function setTile(i,j,state) {
     }
 }
 
+function setHints() {
+    for (var i = 0; i < wordlist[0].length; i++) {
+        document.getElementById('across-button-'+(i+1)).textContent = wordlist[0][i][2]
+    }
+    for (var i = 0; i < wordlist[1].length; i++) {
+        document.getElementById('down-button-'+(i+1)).textContent = wordlist[1][i][2]
+    }
+}
+
+
 function initGrid() {
     generateGrid()
     resetColors()
-
+    
     //Update indices in hint-across containers
     for (let i = 0; i < wordlist[0].length; i++) {
         document.getElementById('across-index-'+(i+1).toString()).innerHTML = (wordlist[0][i][0]*WIDTH+wordlist[0][i][1]+1).toString()+'.'
     }
-
+    
     //Update indices in hint-down containers
     for (let i = 0; i < wordlist[1].length; i++) {
         document.getElementById('down-index-'+(i+1).toString()).innerHTML = (wordlist[1][i][0]*WIDTH+wordlist[1][i][1]+1).toString()+'.'
     }
-
+    
+    setHints()
 
 
 }
@@ -166,6 +205,37 @@ function isBlackTile(i) {
 
     return (grid[Math.floor(i/WIDTH)][i%WIDTH] == ' ')
 }
+
+function isStartingTileIndex(index) {
+    i--;
+
+    if (index > WIDTH*WIDTH) {
+        return true;
+    }
+
+    //Turn index into i and j
+    i = Math.floor(index/WIDTH)
+    j = index%WIDTH
+
+
+    for (var k = 0; k < wordlist[0].length; k++) {
+        if (wordlist[0][k][0] == i && wordlist[0][k][1] == j) {
+            console.log('!')
+            return true
+        }
+    }
+ 
+    for (var k = 0; k < wordlist[1].length; k++) {
+         if (wordlist[1][k][0] == i && wordlist[1][k][1] == j) {
+            console.log('!')
+            return true
+         }
+     }
+ 
+     return false
+ 
+ }
+ 
 
 function isStartingTile(i,j) {
    for (var k = 0; k < wordlist[0].length; k++) {
@@ -277,10 +347,14 @@ function tokenise(words) {
 }
 
 function generateGrid() {
-    words = ['mexxa','xikel','għajjien','bajda','ġenn','ajkla']
+    words = ['mexxa','xikel','għajjien','bajda','ġenn','ajkla',
+            'għarrieda','lanċa']
+    
+    clues = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N']
+    
+
     words = tokenise(words)
 
-    clues = ['A','B','C','D','E','F','G']
         
     //Place first word randomly in grid
     i = randInt(0,WIDTH-words[0].length)
@@ -289,7 +363,7 @@ function generateGrid() {
     dir = randInt(0,1) 
 
     addWord(words[0],i,j,['across','down'][dir])
-    wordlist[dir].push([i,j])
+    wordlist[dir].push([i,j,clues[0],words[0]])
 
     
 
@@ -314,6 +388,24 @@ function generateGrid() {
                 stop_across = false
                 stop_down = false
                 
+                leave = false
+
+                //Dont make words spawn adjacent to each other
+                // if (j > 0 && grid[i][j-1] != ' ') {
+                //     console.log('Cannot place ',word, 'across at ',i,j)
+                //     leave = true
+                // }
+
+                // if (j > 0 && grid[j-1][i] != ' ') {
+                //     console.log('Cannot place ',word, 'down at ',i,j)
+                //     leave = true
+                // } else leave = false;
+
+                // if (leave) {
+                //     console.log('.')
+                // }continue
+
+
                 for (var k = 0; k < word.length; k++) {
                     
                     //Slide Across
@@ -361,15 +453,13 @@ function generateGrid() {
         //Pick highest number from map
         if (max_across >= max_down) {
             //Add word across
-            console.log(word)
             addWord(word,pos_across[0],pos_across[1],'across')
-            wordlist[0].push([pos_across[0],pos_across[1]])
+            wordlist[0].push([pos_across[0],pos_across[1],clues[w],word])
         }
         else {
             //Add word down
-            console.log(word)
             addWord(word,pos_down[0],pos_down[1],'down')
-            wordlist[1].push([pos_down[0],pos_down[1]])
+            wordlist[1].push([pos_down[0],pos_down[1],clues[w],word])
         }
         
     }
@@ -394,6 +484,9 @@ var grid = [
     ];
 
 var wordlist = [[],[]]
+var words = []
+
+var clues = []
 
 
 // var grid = [
