@@ -2,6 +2,7 @@ const WIDTH = 10
 pressed_key = ''
 cursor = 0
 cursor_direction = ""
+player_grid = []
 
 function colorChannelMixer(colorChannelA, colorChannelB, amountToMix){
     var channelA = colorChannelA*amountToMix;
@@ -47,8 +48,15 @@ function keyboardListener() {
 
     //Check if key is backspace
     if (event.key == 'Backspace') {
-        //Remove current letter at cursor
+
+        //Remove current letter at cursor //TODO: Remove letter at previous cursor
         document.getElementById('letter-'+cursor).innerHTML = ' '
+
+
+        //Remove letter from player_grid //TODO: Make this reliable. Abstract into function
+        player_grid[Math.floor(cursor/WIDTH)][cursor%WIDTH-1] = ' '
+
+
         
         next_cursor = cursor - (cursor_direction == 'across'? 1:WIDTH)
         
@@ -75,17 +83,33 @@ function keyboardListener() {
     if (previous_cursor <= 0) {
         previous_cursor = 0
     } else {
+        //Abstract into function
         previous_letter = document.getElementById('letter-'+previous_cursor).innerHTML
     }
     
 
     if (previous_cursor != 0 && previous_letter == 'i' && pressed_key == 'e') {
+        //Abstract into function
         document.getElementById('letter-'+previous_cursor).innerHTML = 'ie'
+
+        //Update player_grid
+        player_grid[Math.floor(previous_cursor/WIDTH)][previous_cursor%WIDTH-1] = 'ie'
+
+
     } else if (previous_cursor != 0 && previous_letter == 'g' && pressed_key == 'ħ') {
+        //Abstract into function
         document.getElementById('letter-'+previous_cursor).innerHTML = 'għ'
+
+        //Update player_grid. TODO: Make this reliable. Abstract into function
+        player_grid[Math.floor(previous_cursor/WIDTH)][previous_cursor%WIDTH-1] = 'għ'
     } else {
-        //Place letter in cursor
+        
+        //Place letter in cursor. TODO: Make this reliable. Abstract into function
         document.getElementById('letter-'+cursor).innerHTML = pressed_key
+        console.log(pressed_key)
+        //Update player_grid. TODO: Make this reliable. Abstract into function
+
+        player_grid[Math.floor(cursor/WIDTH)][cursor%WIDTH-1] = pressed_key
         
         //Move cursor to next tile
         next_cursor = cursor + (cursor_direction == 'across'? 1:WIDTH)
@@ -96,9 +120,22 @@ function keyboardListener() {
     if (!isBlackTile(next_cursor)) {
         cursor = next_cursor
     }
+
+    // console.table(player_grid)
     
+    if (player_win()) {
+        alert('You win!')
+    }
 
 
+
+
+
+}
+
+
+function player_win() {
+    return player_grid.toString() == grid.toString()
 }
 
 function isPinkTile() {
@@ -129,7 +166,7 @@ function placeCursor(i,direction) {
     next_cursor = cursor
         
 
-    console.log(word)
+    // console.log(word)
 
     j = 0
     //Highlight tiles selected
@@ -220,14 +257,14 @@ function isStartingTileIndex(index) {
 
     for (var k = 0; k < wordlist[0].length; k++) {
         if (wordlist[0][k][0] == i && wordlist[0][k][1] == j) {
-            console.log('!')
+            // console.log('!')
             return true
         }
     }
  
     for (var k = 0; k < wordlist[1].length; k++) {
          if (wordlist[1][k][0] == i && wordlist[1][k][1] == j) {
-            console.log('!')
+            // console.log('!')
             return true
          }
      }
@@ -347,10 +384,14 @@ function tokenise(words) {
 }
 
 function generateGrid() {
+    allText = ''
+    path = ['..','data','gabra','lexemes.csv'].join('\\')
+
+
     words = ['mexxa','xikel','għajjien','bajda','ġenn','ajkla',
             'għarrieda','lanċa']
     
-    clues = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N']
+    clues = ['to walk', 'shank','tired','white','insanity','eagle','suddenly','boat']
     
 
     words = tokenise(words)
@@ -464,9 +505,39 @@ function generateGrid() {
         
     }
     
-    console.table(grid)
-    console.log(wordlist)
+    // console.table(grid)
+    // console.log(wordlist)
 }
+
+
+
+
+function loadWords(csv){
+    var lines = csv.split("\n");
+  
+    var result = [];
+  
+    var headers=lines[0].split(",");
+  
+    for(var i=1;i<lines.length;i++){
+  
+        var obj = {};
+        var currentline=lines[i].split(",");
+  
+        for(var j=0;j<headers.length;j++){
+            obj[headers[j]] = currentline[j];
+        }
+  
+        result.push(obj);
+  
+    }
+  
+    //return result; //JavaScript object
+    return JSON.stringify(result); //JSON
+
+
+}
+
 
 var grid = [
     /*  0   1   2    3   4   5   6   7   8   9 */
@@ -480,6 +551,21 @@ var grid = [
  /*7*/[' ',' ',' ', ' ',' ',' ',' ' ,' ',' ',' '],/*7*/
  /*8*/[' ',' ',' ', ' ',' ',' ',' ' ,' ',' ',' '],/*8*/
  /*9*/[' ',' ',' ', ' ',' ',' ',' ' ,' ',' ',' '],/*9*/
+    /*  0   1   2    3   4   5   6    7   8   9 */
+    ];
+
+var player_grid = [
+    /*  0   1   2    3   4   5   6   7   8   9 */
+    /*0*/[' ',' ',' ', ' ',' ',' ',' ' ,' ',' ',' '],/*0*/
+    /*1*/[' ',' ',' ', ' ',' ',' ',' ' ,' ',' ',' '],/*1*/
+    /*2*/[' ',' ',' ', ' ',' ',' ',' ' ,' ',' ',' '],/*2*/
+    /*3*/[' ',' ',' ', ' ',' ',' ',' ' ,' ',' ',' '],/*3*/
+    /*4*/[' ',' ',' ', ' ',' ',' ',' ' ,' ',' ',' '],/*4*/
+    /*5*/[' ',' ',' ', ' ',' ',' ',' ' ,' ',' ',' '],/*5*/
+    /*6*/[' ',' ',' ', ' ',' ',' ',' ' ,' ',' ',' '],/*6*/
+    /*7*/[' ',' ',' ', ' ',' ',' ',' ' ,' ',' ',' '],/*7*/
+    /*8*/[' ',' ',' ', ' ',' ',' ',' ' ,' ',' ',' '],/*8*/
+    /*9*/[' ',' ',' ', ' ',' ',' ',' ' ,' ',' ',' '],/*9*/
     /*  0   1   2    3   4   5   6    7   8   9 */
     ];
 
