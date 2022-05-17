@@ -10,6 +10,22 @@ function colorChannelMixer(colorChannelA, colorChannelB, amountToMix){
     return parseInt(channelA+channelB);
 }
 
+function getI(index) {
+
+    if (index%WIDTH == 0) {
+        return index/WIDTH-1
+    }
+
+    return Math.floor(index/WIDTH)
+}
+
+function getJ(index) {
+    if (index%WIDTH == 0) {
+        return WIDTH-1
+    }
+    return index%WIDTH-1
+}
+
 
 function resetColors() {
     //Reset background color
@@ -33,6 +49,46 @@ function resetColors() {
     }
 }
 
+function incrementCursor() {
+    cursor += (cursor_direction == 'across'? 1:WIDTH)
+
+    if (cursor > WIDTH)
+        cursor = WIDTH
+
+}
+
+function decrementCursor() {
+    cursor -= (cursor_direction == 'across'? 1:WIDTH)
+
+    if (cursor <= 0)
+        cursor = 1
+}
+
+function removeLetter(index) {
+
+    i = Math.floor(index/WIDTH)
+    j = index%WIDTH-1
+
+    document.getElementById('letter-'+index).innerHTML = ' '
+
+    player_grid[i][j] = ' '
+    
+}
+
+function addLetter(index, letter) {
+    i = getI(index)
+    j = getJ(index)
+
+    document.getElementById('letter-'+index).innerHTML = letter
+
+    player_grid[i][j] = letter
+}
+
+function getLetter(index) {
+    return document.getElementById('letter-'+index).innerHTML
+}
+
+
 function keyboardListener() {
 
     if (cursor == 0)
@@ -49,15 +105,14 @@ function keyboardListener() {
     //Check if key is backspace
     if (event.key == 'Backspace') {
 
-        //Remove current letter at cursor //TODO: Remove letter at previous cursor
-        document.getElementById('letter-'+cursor).innerHTML = ' '
-
-
-        //Remove letter from player_grid //TODO: Make this reliable. Abstract into function
-        player_grid[Math.floor(cursor/WIDTH)][cursor%WIDTH-1] = ' '
-
-
+        if ( cursor - (cursor_direction == 'across'? 1:WIDTH) <= 0)
+            return
         
+        //Remove current letter at cursor
+        previous_cursor = cursor - (cursor_direction == 'across'? 1:WIDTH)
+        
+        removeLetter(previous_cursor)
+
         next_cursor = cursor - (cursor_direction == 'across'? 1:WIDTH)
         
         if (!isBlackTile(next_cursor)) {
@@ -66,7 +121,7 @@ function keyboardListener() {
 
         return
     }
-        
+      
 
     //Check if the key is a letter
     if (event.key.length != 1 || !event.key.match(/[a-zġħżċ]/i)) {
@@ -84,32 +139,18 @@ function keyboardListener() {
         previous_cursor = 0
     } else {
         //Abstract into function
-        previous_letter = document.getElementById('letter-'+previous_cursor).innerHTML
+        previous_letter = getLetter(previous_cursor)
     }
     
 
     if (previous_cursor != 0 && previous_letter == 'i' && pressed_key == 'e') {
-        //Abstract into function
-        document.getElementById('letter-'+previous_cursor).innerHTML = 'ie'
-
-        //Update player_grid
-        player_grid[Math.floor(previous_cursor/WIDTH)][previous_cursor%WIDTH-1] = 'ie'
-
-
+        addLetter(previous_cursor,'ie')
     } else if (previous_cursor != 0 && previous_letter == 'g' && pressed_key == 'ħ') {
-        //Abstract into function
-        document.getElementById('letter-'+previous_cursor).innerHTML = 'għ'
-
-        //Update player_grid. TODO: Make this reliable. Abstract into function
-        player_grid[Math.floor(previous_cursor/WIDTH)][previous_cursor%WIDTH-1] = 'għ'
-    } else {
+        addLetter(previous_cursor,'għ')
+    } else if (isPinkTile(cursor)){
         
         //Place letter in cursor. TODO: Make this reliable. Abstract into function
-        document.getElementById('letter-'+cursor).innerHTML = pressed_key
-        console.log(pressed_key)
-        //Update player_grid. TODO: Make this reliable. Abstract into function
-
-        player_grid[Math.floor(cursor/WIDTH)][cursor%WIDTH-1] = pressed_key
+        addLetter(cursor,pressed_key)
         
         //Move cursor to next tile
         next_cursor = cursor + (cursor_direction == 'across'? 1:WIDTH)
@@ -117,11 +158,9 @@ function keyboardListener() {
 
 
     //Remove cursor if end of word is reached
-    if (!isBlackTile(next_cursor)) {
+    if (isPinkTile(next_cursor)) {
         cursor = next_cursor
     }
-
-    // console.table(player_grid)
     
     if (player_win()) {
         alert('You win!')
@@ -180,7 +219,6 @@ function placeCursor(i,direction) {
 
 }
 
-
 function setTile(i,j,state) {
     
     index = j+(i*WIDTH)+1
@@ -215,7 +253,7 @@ function setHints() {
 }
 
 
-function initGrid() {
+function initGrid() {  
     generateGrid()
     resetColors()
     
@@ -384,15 +422,20 @@ function tokenise(words) {
 }
 
 function generateGrid() {
-    allText = ''
-    path = ['..','data','gabra','lexemes.csv'].join('\\')
+
+    // console.log(glosses)
+
+    words = lemmas
+    clues = glosses
 
 
-    words = ['mexxa','xikel','għajjien','bajda','ġenn','ajkla',
-            'għarrieda','lanċa']
+
+
+    // words = ['mexxa','xikel','għajjien','bajda','ġenn','ajkla',
+    //         'għarrieda','lanċa','hello','world']
     
-    clues = ['to walk', 'shank','tired','white','insanity','eagle','suddenly','boat']
-    
+    // clues = ['to walk', 'shank','tired','white','insanity','eagle','suddenly','boat','hello']
+
 
     words = tokenise(words)
 
@@ -510,32 +553,45 @@ function generateGrid() {
 }
 
 
-
-
-function loadWords(csv){
-    var lines = csv.split("\n");
-  
-    var result = [];
-  
-    var headers=lines[0].split(",");
-  
-    for(var i=1;i<lines.length;i++){
-  
-        var obj = {};
-        var currentline=lines[i].split(",");
-  
-        for(var j=0;j<headers.length;j++){
-            obj[headers[j]] = currentline[j];
-        }
-  
-        result.push(obj);
-  
-    }
-  
-    //return result; //JavaScript object
-    return JSON.stringify(result); //JSON
-
-
+// Get the button and container elements from HTML:
+const button = document.getElementById("theButton")
+const data = document.getElementById("info")
+// Create an array of cars to send to the server:
+const cars = [
+	{ "make":"Porsche", "model":"911S" },
+	{ "make":"Mercedes-Benz", "model":"220SE" },
+	{ "make":"Jaguar","model": "Mark VII" }
+];
+// Create an event listener on the button element:
+function getWords(){
+    var data = {}
+    // Get the reciever endpoint from Python using fetch:
+    fetch("http://127.0.0.1:5000/getwords", 
+        {
+            method: 'POST',
+            headers: {
+                'Content-type': 'application/json',
+                'Accept': 'application/json'
+            },body:JSON.stringify(cars)})
+            
+            .then(res=>{
+                if(res.ok){
+                    return res.json()
+                }else{
+                    alert("something is wrong")
+                }})
+            
+            .then(jsonResponse=>{
+                glosses = Object.values(jsonResponse['glosses'])
+                lemmas = Object.values(jsonResponse['lemma'])
+                console.log(lemmas)
+                initGrid()
+                
+                
+            } 
+            ).catch((err) => console.error(err));
+    
+            
 }
 
 
@@ -571,6 +627,9 @@ var player_grid = [
 
 var wordlist = [[],[]]
 var words = []
+
+var glosses = []
+var lemmas = []
 
 var clues = []
 
