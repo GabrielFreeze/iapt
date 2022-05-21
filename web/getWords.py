@@ -7,12 +7,17 @@ import os
 
 app = Flask(__name__)
 cors = CORS(app)
-df = pd.read_csv(os.path.join('..','data','gabra','final','lexemes.csv'), usecols=['lemma','glosses'])
+df = pd.read_csv(os.path.join('..','data','gabra','final','lexemes.csv'), usecols=['lemma','glosses','root','pos'])
 
 def getWords():
-    words = df.sample(n=5)
-    return words.to_dict()
+    
+    nouns = df[df['pos']=='NOUN'].sample(n=3)
+    adjectives = df[df['pos']=='NOUN'].sample(n=1)
+    other = df.sample(n=1)
 
+    words = pd.concat([nouns, adjectives, other])
+    
+    return words.to_dict()
 
 
 @app.route("/getwords", methods=["POST"])

@@ -423,133 +423,164 @@ function tokenise(words) {
 
 function generateGrid() {
 
-    // console.log(glosses)
-
-    words = lemmas
-    clues = glosses
-
-
-
-
-    // words = ['mexxa','xikel','għajjien','bajda','ġenn','ajkla',
-    //         'għarrieda','lanċa','hello','world']
+    try {
+        for (i = 0; i < glosses.length; i++) {
+            clues.push(glosses[i].split(',')[0])
+        } 
+        words = tokenise(lemmas)
     
-    // clues = ['to walk', 'shank','tired','white','insanity','eagle','suddenly','boat','hello']
-
-
-    words = tokenise(words)
-
+            
+        //Place first word randomly in grid
+        i = randInt(0,WIDTH-words[0].length)
+        j = randInt(0,WIDTH-words[0].length)
         
-    //Place first word randomly in grid
-    i = randInt(0,WIDTH-words[0].length)
-    j = randInt(0,WIDTH-words[0].length)
+        dir = randInt(0,1) 
     
-    dir = randInt(0,1) 
-
-    addWord(words[0],i,j,['across','down'][dir])
-    wordlist[dir].push([i,j,clues[0],words[0]])
-
+        addWord(words[0],i,j,['across','down'][dir])
+        wordlist[dir].push([i,j,clues[0],words[0]])
     
-
-    //For all words traverse grid and attempt to find the position with the highest intersections
-    for (var w = 1; w < words.length; w++) {
-        word = words[w]
-        max_across = 0
-        max_down   = 0
         
-        //Choose an initial position with no overlaps
-        pos_across = getEmptyPosition(word,'across')
-        pos_down   = getEmptyPosition(word,'down')
-        
-
-        //Slide word over grid, across and down
-        for (var i = 0; i < WIDTH; i++) {
-            for (var j = 0; j < (WIDTH-word.length)+1; j++) {
-                
-                across_num = 0
-                down_num   = 0
-
-                stop_across = false
-                stop_down = false
-                
-                leave = false
-
-                //Dont make words spawn adjacent to each other
-                // if (j > 0 && grid[i][j-1] != ' ') {
-                //     console.log('Cannot place ',word, 'across at ',i,j)
-                //     leave = true
-                // }
-
-                // if (j > 0 && grid[j-1][i] != ' ') {
-                //     console.log('Cannot place ',word, 'down at ',i,j)
-                //     leave = true
-                // } else leave = false;
-
-                // if (leave) {
-                //     console.log('.')
-                // }continue
-
-
-                for (var k = 0; k < word.length; k++) {
+    
+        //For all words traverse grid and attempt to find the position with the highest intersections
+        for (var w = 1; w < words.length; w++) {
+            word = words[w]
+            max_across = 0
+            max_down   = 0
+            
+            //Choose an initial position with no overlaps
+            pos_across = getEmptyPosition(word,'across')
+            pos_down   = getEmptyPosition(word,'down')
+            
+    
+            //Slide word over grid, across and down
+            for (var i = 0; i < WIDTH; i++) {
+                for (var j = 0; j < (WIDTH-word.length)+1; j++) {
                     
-                    //Slide Across
-
-                    if (!stop_across) {
-                        if (word[k] == grid[i][j+k]) {
-                            across_num ++
+                    across_num = 0
+                    down_num   = 0
+    
+                    stop_across = false
+                    stop_down = false
+                    
+                    leave = false
+    
+                    //Dont make words spawn adjacent to each other
+                    // if (j > 0 && grid[i][j-1] != ' ') {
+                    //     console.log('Cannot place ',word, 'across at ',i,j)
+                    //     leave = true
+                    // }
+    
+                    // if (j > 0 && grid[j-1][i] != ' ') {
+                    //     console.log('Cannot place ',word, 'down at ',i,j)
+                    //     leave = true
+                    // } else leave = false;
+    
+                    // if (leave) {
+                    //     console.log('.')
+                    // }continue
+    
+    
+                    for (var k = 0; k < word.length; k++) {
+                        
+                        //Slide Across
+    
+                        if (!stop_across) {
+                            if (word[k] == grid[i][j+k]) {
+                                across_num ++
+                            }
+                            
+                            //Intersection overlaps other word
+                            else if (grid[i][j+k] != ' ') {
+                                across_num  = -1
+                                stop_across = true
+                            }
                         }
                         
-                        //Intersection overlaps other word
-                        else if (grid[i][j+k] != ' ') {
-                            across_num  = -1
-                            stop_across = true
+                        if (!stop_down) {
+                            // Slide Down                    
+                            if (word[k] == grid[j+k][i]) {
+                                down_num ++
+                            }
+        
+                            //Intersection overlaps other word
+                            else if (grid[j+k][i] != ' ') {
+                                down_num  = -1
+                                stop_down = true
+                            }
+    
                         }
+                       
                     }
                     
-                    if (!stop_down) {
-                        // Slide Down                    
-                        if (word[k] == grid[j+k][i]) {
-                            down_num ++
-                        }
-    
-                        //Intersection overlaps other word
-                        else if (grid[j+k][i] != ' ') {
-                            down_num  = -1
-                            stop_down = true
-                        }
-
+                    if (across_num > max_across) {
+                        max_across = across_num
+                        pos_across = [i,j]
                     }
-                   
-                }
-                
-                if (across_num > max_across) {
-                    max_across = across_num
-                    pos_across = [i,j]
-                }
-                
-                if (down_num > max_down) {
-                    max_down = down_num;
-                    pos_down = [j,i]
+                    
+                    if (down_num > max_down) {
+                        max_down = down_num;
+                        pos_down = [j,i]
+                    }
                 }
             }
-        }
-
-        //Pick highest number from map
-        if (max_across >= max_down) {
-            //Add word across
-            addWord(word,pos_across[0],pos_across[1],'across')
-            wordlist[0].push([pos_across[0],pos_across[1],clues[w],word])
-        }
-        else {
-            //Add word down
-            addWord(word,pos_down[0],pos_down[1],'down')
-            wordlist[1].push([pos_down[0],pos_down[1],clues[w],word])
+    
+            //Pick highest number from map
+            if (max_across >= max_down) {
+                //Add word across
+                addWord(word,pos_across[0],pos_across[1],'across')
+                wordlist[0].push([pos_across[0],pos_across[1],clues[w],word])
+            }
+            else {
+                //Add word down
+                addWord(word,pos_down[0],pos_down[1],'down')
+                wordlist[1].push([pos_down[0],pos_down[1],clues[w],word])
+            }
+            
         }
         
+    } catch (error) {
+        grid = [
+            /*  0   1   2    3   4   5   6   7   8   9 */
+         /*0*/[' ',' ',' ', ' ',' ',' ',' ' ,' ',' ',' '],/*0*/
+         /*1*/[' ',' ',' ', ' ',' ',' ',' ' ,' ',' ',' '],/*1*/
+         /*2*/[' ',' ',' ', ' ',' ',' ',' ' ,' ',' ',' '],/*2*/
+         /*3*/[' ',' ',' ', ' ',' ',' ',' ' ,' ',' ',' '],/*3*/
+         /*4*/[' ',' ',' ', ' ',' ',' ',' ' ,' ',' ',' '],/*4*/
+         /*5*/[' ',' ',' ', ' ',' ',' ',' ' ,' ',' ',' '],/*5*/
+         /*6*/[' ',' ',' ', ' ',' ',' ',' ' ,' ',' ',' '],/*6*/
+         /*7*/[' ',' ',' ', ' ',' ',' ',' ' ,' ',' ',' '],/*7*/
+         /*8*/[' ',' ',' ', ' ',' ',' ',' ' ,' ',' ',' '],/*8*/
+         /*9*/[' ',' ',' ', ' ',' ',' ',' ' ,' ',' ',' '],/*9*/
+            /*  0   1   2    3   4   5   6    7   8   9 */
+            ];
+        
+        player_grid = [
+            /*  0   1   2    3   4   5   6   7   8   9 */
+            /*0*/[' ',' ',' ', ' ',' ',' ',' ' ,' ',' ',' '],/*0*/
+            /*1*/[' ',' ',' ', ' ',' ',' ',' ' ,' ',' ',' '],/*1*/
+            /*2*/[' ',' ',' ', ' ',' ',' ',' ' ,' ',' ',' '],/*2*/
+            /*3*/[' ',' ',' ', ' ',' ',' ',' ' ,' ',' ',' '],/*3*/
+            /*4*/[' ',' ',' ', ' ',' ',' ',' ' ,' ',' ',' '],/*4*/
+            /*5*/[' ',' ',' ', ' ',' ',' ',' ' ,' ',' ',' '],/*5*/
+            /*6*/[' ',' ',' ', ' ',' ',' ',' ' ,' ',' ',' '],/*6*/
+            /*7*/[' ',' ',' ', ' ',' ',' ',' ' ,' ',' ',' '],/*7*/
+            /*8*/[' ',' ',' ', ' ',' ',' ',' ' ,' ',' ',' '],/*8*/
+            /*9*/[' ',' ',' ', ' ',' ',' ',' ' ,' ',' ',' '],/*9*/
+            /*  0   1   2    3   4   5   6    7   8   9 */
+            ];
+        
+        wordlist = [[],[]]
+        words = []
+
+        glosses = []
+        lemmas = []
+
+        clues = []
+        getWords()
     }
+
+
     
-    // console.table(grid)
-    // console.log(wordlist)
 }
 
 
