@@ -215,8 +215,6 @@ function placeCursor(i,direction) {
         next_cursor += (direction == 'across'? 1:WIDTH)
     }
 
-
-
 }
 
 function setTile(i,j,state) {
@@ -251,7 +249,6 @@ function setHints() {
         document.getElementById('down-button-'+(i+1)).textContent = wordlist[1][i][2]
     }
 }
-
 
 function initGrid() {  
     generateGrid()
@@ -584,10 +581,7 @@ function generateGrid() {
 }
 
 
-// Get the button and container elements from HTML:
-const button = document.getElementById("theButton")
-const data = document.getElementById("info")
-// Create an array of cars to send to the server:
+// Create a dummy array of cars to send to the server:
 const cars = [
 	{ "make":"Porsche", "model":"911S" },
 	{ "make":"Mercedes-Benz", "model":"220SE" },

@@ -12,8 +12,8 @@ df = pd.read_csv(os.path.join('..','data','gabra','final','lexemes.csv'), usecol
 def getWords():
     
     nouns = df[df['pos']=='NOUN'].sample(n=3)
-    adjectives = df[df['pos']=='NOUN'].sample(n=1)
-    other = df.sample(n=1)
+    adjectives = df[df['pos']=='NOUN'].sample(n=2)
+    other = df.sample(n=2)
 
     words = pd.concat([nouns, adjectives, other])
     
